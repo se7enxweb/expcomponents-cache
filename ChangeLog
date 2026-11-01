@@ -1,3 +1,11 @@
+Unreleased - se7enxweb/expcomponents-cache
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Renamed: The package is se7enxweb/expcomponents-cache, Exponential's
+  maintained fork of Zeta Components Cache. It replaces zetacomponents/cache,
+  so packages that require zetacomponents/cache keep working. Class names
+  (ezc*) are unchanged.
+
 1.6.3 - Friday 04 October 2024
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

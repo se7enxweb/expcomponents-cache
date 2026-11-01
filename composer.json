@@ -40,12 +40,15 @@
         ]
     },
     "description": "A solution for caching, supporting multiple backends allowing you to specify the best performing solution for your caching-problem.",
-    "homepage": "https://github.com/zetacomponents",
+    "homepage": "https://github.com/se7enxweb/expcomponents-cache",
     "license": "Apache-2.0",
-    "name": "zetacomponents/cache",
+    "name": "se7enxweb/expcomponents-cache",
     "type": "library",
     "require": {
         "zetacomponents/base": "~1.8"
+    },
+    "replace": {
+        "zetacomponents/cache": "self.version"
     },
     "require-dev": {
         "zetacomponents/unit-test": "*"
