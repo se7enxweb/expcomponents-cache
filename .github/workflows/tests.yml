@@ -14,13 +14,20 @@ jobs:
       matrix:
         php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
 
+    # The memcache backend and storage tests need a memcached server on port 11211.
+    services:
+      memcached:
+        image: memcached:1.6
+        ports:
+          - 11211:11211
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: bz2, dom, gd, iconv, mbstring, pdo_sqlite, posix, sqlite3, xml, zlib
+          extensions: bz2, dom, gd, iconv, mbstring, memcache, pdo_sqlite, posix, sqlite3, xml, zlib
           ini-values: error_reporting=-1, display_errors=On, zend.assertions=1
           coverage: none
 
