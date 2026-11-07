@@ -247,8 +247,13 @@ class ezcCacheMemcacheBackend extends ezcCacheMemoryBackend
         }
 
         // add() does not replace and returns true on success. $maxTime is
-        // obeyed by Memcache expiry.
-        while ( $this->memcache->add( $key, $key, false, $maxTime ) === false )
+        // obeyed by Memcache expiry. memcached counts expiry in whole seconds
+        // of its own clock, so an item stored with an expiry of N seconds can
+        // vanish after only N - 1 seconds and a bit; one second more makes
+        // the lock last at least $maxTime seconds. (0 means no expiry, and
+        // 30 days or more is read as a Unix timestamp: both stay as given.)
+        $expiry = ( $maxTime > 0 && $maxTime < 2592000 - 1 ) ? $maxTime + 1 : $maxTime;
+        while ( $this->memcache->add( $key, $key, false, $expiry ) === false )
         {
             // Wait for next check
             usleep( $waitTime );
