@@ -882,6 +882,30 @@ class ezcCacheStorageMemcachePlainTest extends ezcCacheStorageTest
         );
     }
 
+    /**
+     * Reads a property of $object, also when a parent class declares it private.
+     *
+     * PHPUnit's own readAttribute() looked in the parent classes; the
+     * replacement in zetacomponents/unit-test only looks at the object's class,
+     * which cannot see the private $lock of ezcCacheStorageMemory.
+     */
+    public static function readAttribute( $object, $attribute )
+    {
+        for ( $class = new ReflectionClass( $object ); $class !== false; $class = $class->getParentClass() )
+        {
+            if ( $class->hasProperty( $attribute ) && $class->getProperty( $attribute )->getDeclaringClass()->getName() === $class->getName() )
+            {
+                $property = $class->getProperty( $attribute );
+                if ( PHP_VERSION_ID < 80100 )
+                {
+                    $property->setAccessible( true );
+                }
+                return $property->getValue( $object );
+            }
+        }
+        throw new ReflectionException( get_class( $object ) . "::\$$attribute does not exist" );
+    }
+
     public static function suite()
 	{
         return new PHPUnit\Framework\TestSuite( __CLASS__ );

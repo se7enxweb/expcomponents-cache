@@ -329,7 +329,10 @@ class ezcCacheComplexCacheTest extends ezcTestCase
                 array (
                     'memory_storage' =>
                     array (
-                        'id_4' => true,
+                        // id_4 and id_5 were both used 6 times. asort() in getReplacementItems()
+                        // keeps equal items in their order since PHP 8.0 (and PHP 7 for arrays
+                        // this small), so id_4, added first, is freed; PHP 5 freed id_5.
+                        'id_5' => true,
                         'id_1' => true,
                         'id_6' => true,
                     ),
@@ -389,7 +392,10 @@ class ezcCacheComplexCacheTest extends ezcTestCase
                 array (
                     'memory_storage' =>
                     array (
-                        'id_4' => true,
+                        // id_4 and id_5 were both used 6 times. asort() in getReplacementItems()
+                        // keeps equal items in their order since PHP 8.0 (and PHP 7 for arrays
+                        // this small), so id_4, added first, is freed; PHP 5 freed id_5.
+                        'id_5' => true,
                         'id_1' => true,
                         'id_6' => true,
                         // 'id_2' => true,
