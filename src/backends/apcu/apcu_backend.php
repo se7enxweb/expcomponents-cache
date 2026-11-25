@@ -1,0 +1,156 @@
+<?php
+/**
+ * File containing the ezcCacheApcuBackend class.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ * @package Cache
+ * @version //autogentag//
+ * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
+ * @filesource
+ */
+
+/**
+ * This backend stores data in the APCu user cache.
+ *
+ * Use the APCu storages (ezcCacheStorageApcuPlain, ezcCacheStorageFileApcuArray)
+ * instead of this class directly.
+ *
+ * @package Cache
+ * @version //autogentag//
+ */
+class ezcCacheApcuBackend extends ezcCacheMemoryBackend
+{
+    /**
+     * Constructs a new ezcCacheApcuBackend object.
+     *
+     * @throws ezcBaseExtensionNotFoundException
+     *         If the PHP apcu extension is not installed.
+     * @throws ezcCacheApcException
+     *         If APCu is installed but disabled for this process.
+     */
+    public function __construct()
+    {
+        if ( !ezcBaseFeatures::hasExtensionSupport( 'apcu' ) )
+        {
+            throw new ezcBaseExtensionNotFoundException( 'apcu', null, "PHP does not have APCu support." );
+        }
+
+        // Without apc.enable_cli every apcu_store() of a command line process returns false.
+        if ( function_exists( 'apcu_enabled' ) && !apcu_enabled() )
+        {
+            $message = "APCu is loaded but disabled (apc.enabled).";
+            if ( PHP_SAPI === 'cli' )
+            {
+                $message = "APCu is loaded but disabled for the command line: run PHP with apc.enable_cli=1.";
+            }
+            throw new ezcCacheApcException( $message );
+        }
+    }
+
+    /**
+     * Stores the data $var under the key $key. Returns true or false depending
+     * on the success of the operation.
+     *
+     * @param string $key
+     * @param mixed $var
+     * @param int $ttl
+     * @return bool
+     */
+    public function store( $key, $var, $ttl = 0 )
+    {
+        $data = new ezcCacheMemoryVarStruct( $key, $var, $ttl );
+        return apcu_store( $key, $data, $ttl );
+    }
+
+    /**
+     * Fetches the data associated with key $key.
+     *
+     * @param mixed $key
+     * @return mixed
+     */
+    public function fetch( $key )
+    {
+        $data = apcu_fetch( $key );
+        return ( is_object( $data ) ) ? $data->var : false;
+    }
+
+    /**
+     * Deletes the data associated with key $key. Returns true or false depending
+     * on the success of the operation.
+     *
+     * @param string $key
+     * @return bool
+     */
+    public function delete( $key )
+    {
+        return apcu_delete( $key );
+    }
+
+    /**
+     * Resets the complete backend.
+     *
+     * Marked private to not expose more of this interface to the user.
+     *
+     * @return void
+     * @access private
+     */
+    public function reset()
+    {
+        // Kills the whole user cache
+        apcu_clear_cache();
+    }
+
+    /**
+     * Acquires a lock on the given $key.
+     *
+     * @param string $key
+     * @param int $waitTime usleep()
+     * @param int $maxTime seconds
+     */
+    public function acquireLock( $key, $waitTime, $maxTime )
+    {
+        $counter = 0;
+        // add() does not replace and returns true on success. $maxTime is
+        // obeyed by the cache expiry.
+        while ( apcu_add( $key, time(), $maxTime ) === false )
+        {
+            // Wait for next check
+            usleep( $waitTime );
+            // Don't check expiry time too frequently, since it requires restoring
+            if ( ( ++$counter % 10 === 0 ) && ( time() - (int)apcu_fetch( $key ) > $maxTime ) )
+            {
+                // Release expired lock and place own lock
+                apcu_store( $key, time(), $maxTime );
+                break;
+            }
+        }
+    }
+
+    /**
+     * Releases a lock on the given $key.
+     *
+     * @param string $key
+     * @return void
+     */
+    public function releaseLock( $key )
+    {
+        apcu_delete( $key );
+    }
+}
+?>

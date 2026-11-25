@@ -600,7 +600,9 @@ abstract class ezcCacheStorageMemory extends ezcCacheStorage implements ezcCache
         if ( empty( $this->searchRegistry[$location] )
              || $requireFresh === true )
         {
-            $this->searchRegistry[$location] = $this->backend->fetch( $this->registryName . '_' . urlencode( $location ) );
+            $registry = $this->backend->fetch( $this->registryName . '_' . urlencode( $location ) );
+            // The backend answers false for a location without a registry yet.
+            $this->searchRegistry[$location] = is_array( $registry ) ? $registry : array();
         }
     }
 

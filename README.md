@@ -16,6 +16,13 @@ are kept unchanged.
 - It requires the Exponential forks of the components it builds on (`se7enxweb/expcomponents-base`),
   which replace their upstream packages in the same way.
 - The class names (`ezc*`) and the API are unchanged.
+- Two storages use the APCu user cache: `ezcCacheStorageApcuPlain` and
+  `ezcCacheStorageFileApcuArray`. They need the `apcu` extension, and on the command line
+  `apc.enable_cli=1`; without the extension their constructors throw
+  `ezcBaseExtensionNotFoundException`.
+- The APC storages (`ezcCacheStorageApcPlain`, `ezcCacheStorageFileApcArray`) keep calling
+  the `apc_*()` functions. They need the `apc` extension, on PHP 7 the `apcu_bc` compatibility
+  layer next to `apcu`; PHP 8 has neither, use the APCu storages there.
 - Changes made in this fork are listed in `ChangeLog`.
 
 ## Installation

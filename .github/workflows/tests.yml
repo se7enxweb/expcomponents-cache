@@ -27,8 +27,8 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: bz2, dom, gd, iconv, mbstring, memcache, pdo_sqlite, posix, sqlite3, xml, zlib
-          ini-values: error_reporting=-1, display_errors=On, zend.assertions=1
+          extensions: apcu, bz2, dom, gd, iconv, mbstring, memcache, pdo_sqlite, posix, sqlite3, xml, zlib
+          ini-values: error_reporting=-1, display_errors=On, zend.assertions=1, apc.enable_cli=1
           coverage: none
 
       - name: Lint every source file

@@ -1,3 +1,16 @@
+1.6.5 - [unreleased]
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added: ezcCacheStorageApcuPlain, ezcCacheStorageFileApcuArray and
+  ezcCacheApcuBackend store in the APCu user cache, so the APC storages' job is
+  done on PHP 8, where the apc extension does not exist. The APC storages are
+  unchanged.
+- Fixed: The first store on a memory storage (APC, APCu, memcache) whose
+  location has no search registry in the backend yet no longer raises
+  "Automatic conversion of false to array is deprecated" on PHP 8.1 and later.
+  The backend's false is taken as an empty registry.
+
+
 1.6.4 - Friday 6 November 2026
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

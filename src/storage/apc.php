@@ -76,9 +76,21 @@ abstract class ezcCacheStorageApc extends ezcCacheStorageMemory
         // Overwrite parent set options with new ezcCacheStorageApcOptions
         $this->properties['options'] = new ezcCacheStorageApcOptions( $options );
 
-        $this->backend = new ezcCacheApcBackend();
+        $this->backend = $this->createBackend();
         $this->registryName = self::REGISTRY_NAME;
         $this->backendName = self::BACKEND_NAME;
+    }
+
+    /**
+     * Creates the backend this storage stores its data in.
+     *
+     * Subclasses override this to use a different user cache.
+     *
+     * @return ezcCacheMemoryBackend
+     */
+    protected function createBackend()
+    {
+        return new ezcCacheApcBackend();
     }
 
     /**
