@@ -1,4 +1,4 @@
-1.6.5 - [unreleased]
+1.6.5 - Wednesday 25 November 2026
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Added: ezcCacheStorageApcuPlain, ezcCacheStorageFileApcuArray and
@@ -9,6 +9,9 @@
   location has no search registry in the backend yet no longer raises
   "Automatic conversion of false to array is deprecated" on PHP 8.1 and later.
   The backend's false is taken as an empty registry.
+- Updated: The test workflow installs the apcu extension with apc.enable_cli=1,
+  so the APCu tests run in CI; without the extension they are skipped
+  (pull request #1).
 
 
 1.6.4 - Friday 6 November 2026
