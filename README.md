@@ -2,7 +2,7 @@
 
 A solution for caching, supporting multiple backends allowing you to specify the best performing solution for your caching-problem.
 
-This is the Exponential fork of [zetacomponents/Cache](https://github.com/zetacomponents/Cache),
+This is the Exponential Components fork of [zetacomponents/Cache](https://github.com/zetacomponents/Cache),
 maintained by 7x (se7en.x) and the Exponential Foundation for Exponential and anyone else
 who uses the Zeta Components Cache component on current PHP versions. All credit for the
 component goes to the Zeta Components authors listed in `composer.json` and `CREDITS`;
